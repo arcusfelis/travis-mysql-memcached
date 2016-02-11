@@ -20,17 +20,9 @@ sudo apt-get install -y --force-yes \
     -o Dpkg::Options::="--force-confold" \
     mysql-server-5.6 libaio1 libevent-dev
 
-# wget -O mysql-5.6.14.deb http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.14-debian6.0-x86_64.deb/from/http://cdn.mysql.com/
-# sudo dpkg -i mysql-5.6.14.deb
-# sudo apt-get update
-# sudo apt-get install libaio1 libevent-dev
-
-sudo cp /opt/mysql/server-5.6/support-files/mysql.server /etc/init.d/mysql.server
-sudo ln -s /opt/mysql/server-5.6/bin/* /usr/bin/
 sudo sed -i'' 's/table_cache/table_open_cache/' /etc/mysql/my.cnf
 sudo sed -i'' 's/log_slow_queries/slow_query_log/' /etc/mysql/my.cnf
-sudo sed -i'' 's/basedir[^=]\+=.*$/basedir = \/opt\/mysql\/server-5.6/' /etc/mysql/my.cnf
-sudo /etc/init.d/mysql.server start
+sudo /etc/init.d/mysql start
 sudo mysql_upgrade -u root --force
 echo "my.cfg"
 sudo bash -c 'echo "plugin-load = daemon_memcached=libmemcached.so" >> /etc/mysql/my.cnf'
@@ -40,9 +32,9 @@ sudo mysql -u root -e "SELECT VERSION();"
 sudo cat /var/log/syslog | grep mysql
 
 sudo mysql -u root -e "CREATE DATABASE test;"
-sudo mysql -u root -e "source /opt/mysql/server-5.6/share/innodb_memcached_config.sql"
+sudo mysql -u root -e "SOURCE /usr/share/mysql/innodb_memcached_config.sql;"
 sudo mysql -u root -e 'INSTALL PLUGIN daemon_memcached soname "libmemcached.so";'
-sudo /etc/init.d/mysql.server restart
+sudo /etc/init.d/mysql restart
 
 echo "Listening ports:"
 sudo lsof -nP -i | grep LISTEN
