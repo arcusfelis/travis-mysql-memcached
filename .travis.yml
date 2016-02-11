@@ -1,0 +1,8 @@
+sudo: required
+
+services:
+  - mysql
+
+script:
+    - mysql --version
+    - ./install_mysql56.sh
